@@ -18,7 +18,6 @@
 #include "PX4/autopilot_interface.h"
 #include <fstream>
 
-#define HITL
 #ifndef HITL
 #include "DroneSim/dronemodel.hpp"
 #endif
