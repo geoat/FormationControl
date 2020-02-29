@@ -1,0 +1,59 @@
+PathPlannerData<data_type> GetPathPlannerData(const Packet& packet)
+    {
+        PathPlannerData<data_type> inputPathPlannerData;
+        if (packet.type == T_PATHTYPE)
+        {
+            inputPathPlannerData.pathType = (PathType)packet.data[0];
+            auto otherDatas = packet.data + 1;
+            switch (inputPathPlannerData.pathType)
+            {
+                case PathType::Line:
+                {
+                    auto sizeOfDataSend = sizeof(Packet::data_type);
+                    memcpy(converter.m_bytes, otherDatas, sizeOfDataSend);
+                    inputPathPlannerData.lineOrigin.x = converter.m_value;
+                    memcpy(converter.m_bytes, otherDatas+sizeOfDataSend, sizeOfDataSend);
+                    inputPathPlannerData.lineOrigin.y = converter.m_value;
+                    memcpy(converter.m_bytes, otherDatas + sizeOfDataSend * 2, sizeOfDataSend);
+                    inputPathPlannerData.lineSlope.x = converter.m_value;
+                    memcpy(converter.m_bytes, otherDatas+sizeOfDataSend*3, sizeOfDataSend);
+                    inputPathPlannerData.lineSlope.y = converter.m_value;
+                }
+                break;
+
+                case PathType::Orbit:
+                {
+                    auto sizeOfDataSend = sizeof(Packet::data_type);
+                    memcpy(converter.m_bytes, otherDatas, sizeOfDataSend);
+                    inputPathPlannerData.radius = converter.m_value;
+                    memcpy(converter.m_bytes, otherDatas+sizeOfDataSend, sizeOfDataSend);
+                    inputPathPlannerData.orbitCentre.x = converter.m_value;
+                    memcpy(converter.m_bytes, otherDatas + sizeOfDataSend * 2, sizeOfDataSend);
+                    inputPathPlannerData.orbitCentre.y = converter.m_value;
+                }
+                break;
+
+                    case PathType::WayPoints:
+                    {
+                        auto sizeOfDataSend = sizeof(Packet::data_type);
+                        memcpy(converter.m_bytes, otherDatas, sizeOfDataSend);
+                        inputPathPlannerData.radius = converter.m_value;
+
+                        for (size_t i = sizeOfDataSend+1; i < packet.dataLength; i=i+2*sizeOfDataSend)
+                        {
+                            Point<data_type> point;
+                            memcpy(converter.m_bytes, packet.data+i, sizeOfDataSend);
+                            point.x = converter.m_value;
+                            memcpy(converter.m_bytes, packet.data+i+sizeOfDataSend, sizeOfDataSend);
+                            point.y = converter.m_value;
+                            inputPathPlannerData.push_back(point);
+                            std::cout<<point.x<<"x,y"<<point.y<<std::endl;
+
+                        }
+                        
+
+                    }
+                    break;
+            }
+
+        }
