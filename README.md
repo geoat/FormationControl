@@ -7,3 +7,4 @@
 
 ## Compiling and Building
 	Use terminal command: g++ -I. -I include/ -I PX4/mavlink/include/mavlink/v2.0 formationcontrol.cpp PX4/serial_port.cpp PX4/autopilot_interface.cpp -o formation_control -lpthread -std=c++11 
+	For server program: g++ -I. server.cpp -o server.out -std=c++11 -lpthread
